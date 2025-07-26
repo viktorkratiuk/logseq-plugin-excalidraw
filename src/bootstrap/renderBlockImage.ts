@@ -13,11 +13,20 @@ export const insertSVG = async (containerId: string, svg?: SVGSVGElement, excali
   const _svg =
     svg ??
     (await exportToSvg(
-      excalidrawData ?? {
-        elements: [],
-        appState: { exportWithDarkMode: theme === 'dark' },
-        files: null,
-      },
+      // Background fix: correctly applies the color when the user exits the editor
+      excalidrawData
+        ? {
+            ...excalidrawData,
+            appState: {
+              ...(excalidrawData.appState ?? {}),
+              exportWithDarkMode: theme === 'dark',
+            },
+          }
+        : {
+            elements: [],
+            appState: { exportWithDarkMode: theme === 'dark' },
+            files: null,
+          },
     ))
   setTimeout(() => {
     // remove svg if it exists

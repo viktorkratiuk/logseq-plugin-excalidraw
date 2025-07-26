@@ -7,8 +7,6 @@
 ## Demo
 ![demo](./demo.gif)
 
-[slides Demo](https://lusun.com/v/Y8FLjgVpM2A)
-
 ## Features
 
 - Create and edit Excalidraw drawings directly in Logseq

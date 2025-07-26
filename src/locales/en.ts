@@ -2,7 +2,7 @@ export default {
   settings: {
     langCode: {
       title: 'Language',
-      description: 'Plugin Language, restart logseq to take effect',
+      description: 'Plugin and Excalidraw language, restart logseq to take effect',
     },
     HandDrawn: {
       title: 'Hand-drawn Font Family',
