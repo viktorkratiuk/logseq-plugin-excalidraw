@@ -1,43 +1,48 @@
-import { useAtom } from "jotai";
-import { Toaster } from "@/components/ui/toaster";
-import Editor, { Theme } from "@/components/Editor";
-import { getExcalidrawInfoFromPage, getTags, setTheme } from "@/lib/utils";
-import { insertSVG } from "@/bootstrap/renderBlockImage";
-import { useEffect } from "react";
-import { tagsAtom } from "@/model/tags";
+import { useAtom } from 'jotai'
+import { useEffect } from 'react'
 
-const EditorApp: React.FC<{ pageName: string; renderSlotId?: string }> = ({
-  pageName,
-  renderSlotId,
-}) => {
-  const [, setTags] = useAtom(tagsAtom);
+import { insertSVG } from '@/bootstrap/renderBlockImage'
+import type { Theme } from '@/components/Editor';
+import Editor from '@/components/Editor'
+import { Toaster } from '@/components/ui/toaster'
+import { getExcalidrawInfoFromPage, getTags, setTheme, updateExcalidrawSvgTitle } from '@/lib/utils'
+import { tagsAtom } from '@/model/tags'
+
+interface EditorAppProps {
+  pageName: string
+  renderSlotId?: string
+}
+
+const EditorApp: React.FC<EditorAppProps> = ({ pageName, renderSlotId }) => {
+  const [, setTags] = useAtom(tagsAtom)
   const onClose = async () => {
     // refresh render block image
     if (pageName && renderSlotId) {
-      const { excalidrawData } = await getExcalidrawInfoFromPage(pageName);
-      insertSVG(renderSlotId, undefined, excalidrawData);
+      const { excalidrawData, rawBlocks } = await getExcalidrawInfoFromPage(pageName)
+      insertSVG(renderSlotId, undefined, excalidrawData)
+
+      // Update title with alias
+      const page = await logseq.Editor.getPage(pageName)
+      await updateExcalidrawSvgTitle(renderSlotId, rawBlocks, page?.originalName || pageName)
     }
-    logseq.hideMainUI();
-  };
+    logseq.hideMainUI()
+  }
   useEffect(() => {
-    getTags().then(setTags);
-  }, []);
+    getTags().then(setTags)
+  }, [setTags])
   // initialize theme
   useEffect(() => {
-    logseq.App.getStateFromStore<Theme>("ui/theme").then(setTheme);
-  }, []);
+    logseq.App.getStateFromStore<Theme>('ui/theme').then(setTheme)
+  }, [])
   return (
     <>
-      <div className="w-screen h-screen flex items-center justify-center overflow-auto">
-        <div
-          className="w-screen h-screen fixed top-0 left-0"
-          onClick={() => logseq.hideMainUI()}
-        ></div>
+      <div className="flex h-screen w-screen items-center justify-center overflow-auto">
+        <div className="fixed left-0 top-0 h-screen w-screen" onClick={() => logseq.hideMainUI()}></div>
         <Editor pageName={pageName} onClose={onClose} />
       </div>
       <Toaster />
     </>
-  );
-};
+  )
+}
 
-export default EditorApp;
+export default EditorApp

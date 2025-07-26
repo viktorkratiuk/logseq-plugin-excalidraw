@@ -156,6 +156,32 @@ export const getTags = async (): Promise<string[]> => {
   })
 }
 
+/**
+ * Get excalidraw drawing alias from blocks or fallback to page name
+ */
+export const getExcalidrawAlias = (rawBlocks: BlockEntity[], fallbackName: string): string => {
+  const firstBlock = rawBlocks?.[0]
+  return firstBlock?.properties?.excalidrawPluginAlias || fallbackName
+}
+
+/**
+ * Update title in DOM element using alias or fallback to page name (useful when DOM element is already generated)
+ */
+export const updateExcalidrawSvgTitle = async (containerId: string, rawBlocks: BlockEntity[], fallbackName: string) => {
+  const showTitle = getExcalidrawAlias(rawBlocks, fallbackName)
+
+  const titleElement = parent.document.getElementById(containerId)?.querySelector?.('.excalidraw-title')
+
+  if (titleElement) {
+    if (titleElement.textContent === showTitle) {
+      return
+    }
+
+    titleElement.textContent = showTitle
+    titleElement.setAttribute('title', showTitle)
+  }
+}
+
 export const setTheme = (theme: Theme = 'light') => {
   if (theme === 'light') {
     document.documentElement.classList.remove('dark')

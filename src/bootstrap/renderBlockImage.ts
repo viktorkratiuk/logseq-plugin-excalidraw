@@ -2,7 +2,7 @@ import { exportToSvg } from '@excalidraw/excalidraw'
 
 import type { Theme } from '@/components/Editor'
 import { NEW_FILE_EXCALIDRAW_DATA } from '@/lib/constants'
-import { getExcalidrawInfoFromPage } from '@/lib/utils'
+import { getExcalidrawAlias, getExcalidrawInfoFromPage } from '@/lib/utils'
 import getI18N from '@/locales'
 import type { ExcalidrawData } from '@/type'
 
@@ -73,7 +73,7 @@ const bootRenderBlockImage = () => {
       }
 
       // get excalidraw data
-      const { excalidrawData } = await getExcalidrawInfoFromPage(pageName)
+      const { excalidrawData, rawBlocks } = await getExcalidrawInfoFromPage(pageName)
 
       const { elements, appState, files } = excalidrawData
       const id = `excalidraw-${pageName}-${slot}`
@@ -97,7 +97,9 @@ const bootRenderBlockImage = () => {
             },
       )
 
-      const showTitle = page?.propertiesTextValues?.excalidrawPluginAlias ?? page?.originalName
+      // Get alias or fallback to page name
+      const showTitle = getExcalidrawAlias(rawBlocks, page?.originalName)
+
       logseq.provideUI({
         key: `excalidraw-${slot}`,
         slot,
