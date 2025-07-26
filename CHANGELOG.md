@@ -1,6 +1,13 @@
 # [1.6.0](https://github.com/viktorkratiuk/logseq-plugin-excalidraw/compare/v1.5.1...v1.6.0) (2025-07-26)
 
 
+### Features
+
+* add Ukrainian and German localization + fix build errors + preserve viewBackgroundColor in SVG ([624774e](https://github.com/viktorkratiuk/logseq-plugin-excalidraw/commit/624774eee31f1b5529645ec0c29739a35e0ba977))
+
+# [1.6.0](https://github.com/viktorkratiuk/logseq-plugin-excalidraw/compare/v1.5.1...v1.6.0) (2025-07-26)
+
+
 ### Bug Fixes
 
 * preserve viewBackgroundColor in SVG after editor exit ([72255b3](https://github.com/viktorkratiuk/logseq-plugin-excalidraw/commit/72255b346a51f8db7ddae6dc9bfde15f314ba0bc))
