@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/viktorkratiuk/logseq-plugin-excalidraw/compare/v1.6.0...v1.6.1) (2025-07-26)
+
+
+### Bug Fixes
+
+* display excalidraw alias instead of page name in SVG block hover ([b629a84](https://github.com/viktorkratiuk/logseq-plugin-excalidraw/commit/b629a84998e660eeb9301b14bd855407aec0ec16))
+
 # [1.6.0](https://github.com/viktorkratiuk/logseq-plugin-excalidraw/compare/v1.5.1...v1.6.0) (2025-07-26)
 
 
