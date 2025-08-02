@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/viktorkratiuk/logseq-plugin-excalidraw/compare/v1.6.1...v1.7.0) (2025-08-02)
+
+
+### Features
+
+* move GitHub URL to constants and update to fork repository ([4c18f36](https://github.com/viktorkratiuk/logseq-plugin-excalidraw/commit/4c18f36d10451703edeeec3b0372877066480357))
+
 ## [1.6.1](https://github.com/viktorkratiuk/logseq-plugin-excalidraw/compare/v1.6.0...v1.6.1) (2025-07-26)
 
 
