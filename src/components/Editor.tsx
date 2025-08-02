@@ -15,6 +15,7 @@ import { getExcalidrawLibraryItems, updateExcalidrawLibraryItems } from '@/boots
 import { Input } from '@/components/ui/input'
 import { useToast } from '@/components/ui/use-toast'
 import useSlides from '@/hook/useSlides'
+import { GITHUB_URL } from '@/lib/constants'
 import { cn, genBlockData, getExcalidrawInfoFromPage, getLangCode, getMinimalAppState } from '@/lib/utils'
 import getI18N from '@/locales'
 import type { ExcalidrawData, PluginSettings } from '@/type'
@@ -157,8 +158,8 @@ const Editor: React.FC<
   }, [])
 
   return (
-    <div className={cn('w-screen h-screen pt-5 relative', theme === 'dark' ? 'bg-[#121212]' : 'bg-white')}>
-      {excalidrawData && libraryItems && (
+    <div className={cn('relative h-screen w-screen pt-5', theme === 'dark' ? 'bg-[#121212]' : 'bg-white')}>
+      {excalidrawData && libraryItems ? (
         <Excalidraw
           excalidrawAPI={(api) => setExcalidrawAPI(api)}
           langCode={getLangCode((logseq.settings as unknown as PluginSettings)?.langCode)}
@@ -198,10 +199,7 @@ const Editor: React.FC<
           )}
         >
           <MainMenu>
-            <MainMenu.Item
-              icon={<TbBrandGithub />}
-              onSelect={() => logseq.App.openExternalLink('https://github.com/haydenull/logseq-plugin-excalidraw')}
-            >
+            <MainMenu.Item icon={<TbBrandGithub />} onSelect={() => logseq.App.openExternalLink(GITHUB_URL)}>
               Github
             </MainMenu.Item>
             <MainMenu.DefaultItems.Export />
@@ -219,7 +217,7 @@ const Editor: React.FC<
           </WelcomeScreen>
           <Footer>
             {slidesModeEnabled ? (
-              <div className="ml-2 flex gap-2 items-center">
+              <div className="ml-2 flex items-center gap-2">
                 <Button
                   className="!h-[var(--lg-button-size)] !w-auto"
                   onSelect={() => setShowSlidesPreview((_old) => !_old)}
@@ -240,7 +238,7 @@ const Editor: React.FC<
                   aria-disabled={isFirst}
                   title={i18nEditor.slidesPrev}
                 >
-                  <FiArrowLeft className={cn({ 'text-gray-400 !w-[14px]': isFirst })} />
+                  <FiArrowLeft className={cn({ '!w-[14px] text-gray-400': isFirst })} />
                 </Button>
                 <Button
                   className="!h-[var(--lg-button-size)] !w-auto"
@@ -248,7 +246,7 @@ const Editor: React.FC<
                   aria-disabled={isLast}
                   title={i18nEditor.slidesNext}
                 >
-                  <FiArrowRight className={cn({ 'text-gray-400 !w-[14px]': isLast })} />
+                  <FiArrowRight className={cn({ '!w-[14px] text-gray-400': isLast })} />
                 </Button>
                 {activeFrameIndex >= 0 ? (
                   <div className="text-base">
@@ -260,11 +258,11 @@ const Editor: React.FC<
             ) : null}
           </Footer>
         </Excalidraw>
-      )}
+      ) : null}
       {slidesModeEnabled && showSlidesPreview ? <SlidesPreview api={excalidrawAPI} theme={theme} /> : null}
       <SlidesOverview
         theme={theme}
-        className="fixed w-screen h-screen z-50 top-0 left-0"
+        className="fixed left-0 top-0 z-50 h-screen w-screen"
         open={showSlidesOverview}
         onClose={() => setShowSlidesOverview(false)}
         api={excalidrawAPI}

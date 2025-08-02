@@ -2,7 +2,7 @@ import { useAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { insertSVG } from '@/bootstrap/renderBlockImage'
-import type { Theme } from '@/components/Editor';
+import type { Theme } from '@/components/Editor'
 import Editor from '@/components/Editor'
 import { Toaster } from '@/components/ui/toaster'
 import { getExcalidrawInfoFromPage, getTags, setTheme, updateExcalidrawSvgTitle } from '@/lib/utils'
@@ -21,7 +21,7 @@ const EditorApp: React.FC<EditorAppProps> = ({ pageName, renderSlotId }) => {
       const { excalidrawData, rawBlocks } = await getExcalidrawInfoFromPage(pageName)
       insertSVG(renderSlotId, undefined, excalidrawData)
 
-      // Update title with alias
+      // Update the SVG title with the alias if it exists
       const page = await logseq.Editor.getPage(pageName)
       await updateExcalidrawSvgTitle(renderSlotId, rawBlocks, page?.originalName || pageName)
     }

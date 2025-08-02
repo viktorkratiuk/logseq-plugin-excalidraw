@@ -80,3 +80,8 @@ export const APP_STATE_PROPERTIES: Array<keyof AppState> = [
   'viewModeEnabled',
   'zenModeEnabled',
 ]
+
+/**
+ * External links
+ */
+export const GITHUB_URL = 'https://github.com/viktorkratiuk/logseq-plugin-excalidraw'
