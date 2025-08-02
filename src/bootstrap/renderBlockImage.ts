@@ -111,9 +111,6 @@ const bootRenderBlockImage = () => {
                 <a data-on-click="delete" data-page-name="${page?.originalName}" data-block-id="${uuid}" title="${i18nPreview.deleteButton}">
                   <i class="ti ti-trash"></i>
                 </a>
-                <a data-on-click="refresh" data-page-name="${page?.originalName}" data-container-id="${id}" title="${i18nPreview.refreshButton}">
-                  <i class="ti ti-refresh"></i>
-                </a>
                 <a data-on-click="edit" data-page-name="${page?.originalName}" data-container-id="${id}" title="${i18nPreview.editButton}">
                   <i class="ti ti-edit"></i>
                 </a>
