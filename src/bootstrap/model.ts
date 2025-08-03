@@ -1,8 +1,5 @@
-import { getExcalidrawInfoFromPage } from '@/lib/utils'
 import getI18N from '@/locales'
 import type { RenderAppProps } from '@/main'
-
-import { insertSVG } from './renderBlockImage'
 
 const bootModels = (renderApp: (props: RenderAppProps) => void) => {
   const { common: i18nCommon } = getI18N()
@@ -36,6 +33,14 @@ const bootModels = (renderApp: (props: RenderAppProps) => void) => {
     },
     showDashboard() {
       renderApp({ mode: 'dashboard' })
+      logseq.showMainUI()
+    },
+
+    openDrawLink(e) {
+      const pageName = e.dataset.pageName
+      if (!pageName) return logseq.UI.showMsg(i18nCommon.pageNotFound)
+
+      renderApp({ mode: 'preview', pageName })
       logseq.showMainUI()
     },
   })

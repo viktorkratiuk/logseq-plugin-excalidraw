@@ -45,6 +45,15 @@ const uk: I18N = {
   common: {
     pageNotFound: 'Сторінка, що відповідає малюнку, не знайдена',
   },
+  pageSearch: {
+    placeholder: 'Пошук сторінок Excalidraw...',
+    resultsPlaceholder: 'Почніть вводити для пошуку...',
+    closeHint: 'ESC - закрити',
+    noResults: 'Нічого не знайдено',
+    loading: 'Завантаження...',
+    pageCount: (count: number) => `${count} сторін${count === 1 ? 'ка' : count < 5 ? 'ки' : 'ок'}`,
+    noAlias: 'Нема аліаса',
+  },
 }
 
 export default uk

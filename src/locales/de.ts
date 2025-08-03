@@ -45,6 +45,15 @@ const de: I18N = {
   common: {
     pageNotFound: 'Die zur Zeichnung gehörende Seite wurde nicht gefunden',
   },
+  pageSearch: {
+    placeholder: 'Excalidraw-Seiten suchen...',
+    resultsPlaceholder: 'Beginnen Sie mit der Eingabe zum Suchen...',
+    closeHint: 'ESC - schließen',
+    noResults: 'Keine Ergebnisse gefunden',
+    loading: 'Laden...',
+    pageCount: (count: number) => `${count} Seite${count !== 1 ? 'n' : ''}`,
+    noAlias: 'Kein Alias',
+  },
 }
 
 export default de

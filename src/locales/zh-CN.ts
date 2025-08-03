@@ -45,6 +45,15 @@ const zhCN: I18N = {
   common: {
     pageNotFound: '未找到画板对应的文件',
   },
+  pageSearch: {
+    placeholder: '搜索 Excalidraw 页面...',
+    resultsPlaceholder: '开始输入以搜索...',
+    closeHint: 'ESC - 关闭',
+    noResults: '未找到结果',
+    loading: '加载中...',
+    pageCount: (count: number) => `${count} 个页面`,
+    noAlias: '无别名',
+  },
 }
 
 export default zhCN

@@ -12,14 +12,23 @@ import { IoAppsOutline } from 'react-icons/io5'
 import { TbLogout, TbBrandGithub, TbArrowsMinimize } from 'react-icons/tb'
 
 import { getExcalidrawLibraryItems, updateExcalidrawLibraryItems } from '@/bootstrap/excalidrawLibraryItems'
+import { insertSVG } from '@/bootstrap/renderBlockImage'
 import { Input } from '@/components/ui/input'
 import { useToast } from '@/components/ui/use-toast'
 import useSlides from '@/hook/useSlides'
 import { GITHUB_URL } from '@/lib/constants'
-import { cn, genBlockData, getExcalidrawInfoFromPage, getLangCode, getMinimalAppState } from '@/lib/utils'
+import {
+  cn,
+  genBlockData,
+  getExcalidrawInfoFromPage,
+  getLangCode,
+  getMinimalAppState,
+  updateExcalidrawSvgTitle,
+} from '@/lib/utils'
 import getI18N from '@/locales'
 import type { ExcalidrawData, PluginSettings } from '@/type'
 
+import { PageSearchOverlay } from './PageSearchOverlay'
 import SlidesOverview from './SlidesOverview'
 import SlidesPreview from './SlidesPreview'
 import TagSelector from './TagSelector'
@@ -39,8 +48,9 @@ const Editor: React.FC<
     pageName: string
     onClose?: () => void
     type?: EditorTypeEnum
+    renderSlotId?: string
   }>
-> = ({ pageName, onClose, type = EditorTypeEnum.App }) => {
+> = ({ pageName, onClose, type = EditorTypeEnum.App, renderSlotId }) => {
   const [excalidrawData, setExcalidrawData] = useState<ExcalidrawData>()
   const [libraryItems, setLibraryItems] = useState<LibraryItems>()
   const [theme, setTheme] = useState<Theme>()
@@ -54,6 +64,7 @@ const Editor: React.FC<
   const [slidesModeEnabled, setSlidesModeEnabled] = useState(false)
   const [showSlidesPreview, setShowSlidesPreview] = useState(true)
   const [showSlidesOverview, setShowSlidesOverview] = useState(false)
+  const [showPageSearchOverlay, setShowPageSearchOverlay] = useState(false)
 
   const [aliasName, setAliasName] = useState<string>()
   const [tag, setTag] = useState<string>()
@@ -121,6 +132,26 @@ const Editor: React.FC<
     }, WAIT + 100)
   }
 
+  const saveCurrentDrawing = async () => {
+    if (currentExcalidrawDataRef.current && blockUUIDRef.current) {
+      const { elements, appState, files } = currentExcalidrawDataRef.current
+      const blockData = genBlockData({
+        ...excalidrawData,
+        elements,
+        appState: getMinimalAppState(appState!),
+        files,
+      })
+      await logseq.Editor.updateBlock(blockUUIDRef.current, blockData)
+
+      if (renderSlotId) {
+        const { excalidrawData: freshData, rawBlocks } = await getExcalidrawInfoFromPage(pageName)
+        await insertSVG(renderSlotId, undefined, freshData)
+        const page = await logseq.Editor.getPage(pageName)
+        await updateExcalidrawSvgTitle(renderSlotId, rawBlocks, page?.originalName || pageName)
+      }
+    }
+  }
+
   const onAliasNameChange = (aliasName: string) => {
     setAliasName(aliasName)
     if (pagePropertyBlockUUIDRef.current) {
@@ -157,6 +188,122 @@ const Editor: React.FC<
     logseq.App.getStateFromStore<Theme>('ui/theme').then(setTheme)
   }, [])
 
+  // Add search button to Link input field
+  useEffect(() => {
+    const styleElement = document.createElement('style')
+    styleElement.textContent = `
+      .logseq-search-icon:hover {
+        transform: scale(1.3);
+      }
+    `
+    document.head.appendChild(styleElement)
+
+    const createSearchButton = (linkInput: HTMLInputElement) => {
+      const btn = document.createElement('button')
+      btn.className = 'link-search-btn'
+      const img = document.createElement('img')
+      img.src = new URL('../assets/logseq.png', import.meta.url).href
+      img.style.cssText = 'width: 22px; height: 22px; object-fit: contain; transition: transform 0.2s ease;'
+      img.className = 'logseq-search-icon'
+      btn.appendChild(img)
+
+      btn.onclick = () => setShowPageSearchOverlay(true)
+      btn.style.cssText = `
+        position: fixed;
+        width: 24px;
+        height: 24px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 12px;
+        z-index: 999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      `
+
+      document.body.appendChild(btn)
+      updateButtonPosition(linkInput, btn)
+      return btn
+    }
+
+    const updateButtonPosition = (linkInput: HTMLInputElement, btn: HTMLButtonElement) => {
+      const rect = linkInput.getBoundingClientRect()
+      btn.style.left = rect.left + rect.width / 2 - 12 + 12 + 'px'
+      btn.style.top = rect.top - 40 + 'px'
+    }
+
+    const checkAndUpdateButton = () => {
+      const linkInput = document.querySelector('input[placeholder*="ink"]') as HTMLInputElement
+      const existingBtn = document.querySelector('.link-search-btn') as HTMLButtonElement
+
+      if (!linkInput && existingBtn) {
+        existingBtn.remove()
+        return
+      }
+
+      if (linkInput && !existingBtn) {
+        createSearchButton(linkInput)
+        return
+      }
+
+      if (linkInput && existingBtn) {
+        updateButtonPosition(linkInput, existingBtn)
+        existingBtn.onclick = () => setShowPageSearchOverlay(true)
+      }
+    }
+
+    const observer = new MutationObserver((mutations) => {
+      let shouldUpdate = false
+
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'childList') {
+          shouldUpdate = true
+        }
+        if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+          shouldUpdate = true
+        }
+      })
+
+      if (shouldUpdate) {
+        checkAndUpdateButton()
+      }
+    })
+
+    checkAndUpdateButton()
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['style', 'class'],
+    })
+
+    const handlePositionUpdate = () => checkAndUpdateButton()
+    window.addEventListener('scroll', handlePositionUpdate, true)
+    window.addEventListener('resize', handlePositionUpdate)
+
+    const resizeObserver = new ResizeObserver(() => {
+      checkAndUpdateButton()
+    })
+
+    resizeObserver.observe(document.body)
+
+    return () => {
+      observer.disconnect()
+      resizeObserver.disconnect()
+      window.removeEventListener('scroll', handlePositionUpdate, true)
+      window.removeEventListener('resize', handlePositionUpdate)
+      try {
+        document.head.removeChild(styleElement)
+      } catch (e) {
+        // Style element already removed
+      }
+      const existingBtn = document.querySelector('.link-search-btn')
+      existingBtn?.remove()
+    }
+  }, [pageName])
+
   return (
     <div className={cn('relative h-screen w-screen pt-5', theme === 'dark' ? 'bg-[#121212]' : 'bg-white')}>
       {excalidrawData && libraryItems ? (
@@ -173,6 +320,24 @@ const Editor: React.FC<
           }}
           onChange={onExcalidrawChange}
           onLibraryChange={onLibraryChange}
+          onLinkOpen={(element, event) => {
+            if (element.link && element.link.includes('#excalidraw:')) {
+              event.preventDefault()
+
+              const pageName = element.link.replace(/.*#excalidraw:/, '')
+
+              saveCurrentDrawing().then(() => {
+                if (window.renderApp) {
+                  window.renderApp({ mode: 'edit', pageName, renderSlotId: 'excalidraw-link-' + Date.now() })
+                  logseq.showMainUI()
+                }
+              })
+
+              return false
+            }
+
+            return true
+          }}
           renderTopRightUI={() => (
             <div className="flex items-center gap-3">
               <Input placeholder="Untitled" value={aliasName} onChange={(e) => onAliasNameChange(e.target.value)} />
@@ -266,6 +431,39 @@ const Editor: React.FC<
         open={showSlidesOverview}
         onClose={() => setShowSlidesOverview(false)}
         api={excalidrawAPI}
+      />
+      <PageSearchOverlay
+        isOpen={showPageSearchOverlay}
+        onClose={() => setShowPageSearchOverlay(false)}
+        onPageSelect={(page) => {
+          const linkInput = document.querySelector('input[placeholder*="ink"]') as HTMLInputElement
+
+          if (linkInput) {
+            const drawLink = `#excalidraw:${page.originalName || page.name}`
+
+            const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+              window.HTMLInputElement.prototype,
+              'value',
+            )?.set
+            if (nativeInputValueSetter) {
+              nativeInputValueSetter.call(linkInput, drawLink)
+            } else {
+              linkInput.value = drawLink
+            }
+
+            linkInput.focus()
+            linkInput.select()
+
+            const inputEvent = new Event('input', { bubbles: true })
+            const changeEvent = new Event('change', { bubbles: true })
+
+            Object.defineProperty(inputEvent, 'target', { writable: false, value: linkInput })
+            Object.defineProperty(changeEvent, 'target', { writable: false, value: linkInput })
+
+            linkInput.dispatchEvent(inputEvent)
+            linkInput.dispatchEvent(changeEvent)
+          }
+        }}
       />
     </div>
   )

@@ -105,3 +105,11 @@ function renderApp(props: RenderAppProps) {
   reactAppRoot = createRoot(container!)
   reactAppRoot.render(<React.StrictMode>{App}</React.StrictMode>)
 }
+
+declare global {
+  interface Window {
+    renderApp: (props: RenderAppProps) => void
+  }
+}
+
+window.renderApp = renderApp

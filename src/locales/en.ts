@@ -43,4 +43,13 @@ export default {
   common: {
     pageNotFound: 'The page corresponding to the drawing is not found',
   },
+  pageSearch: {
+    placeholder: 'Search Excalidraw pages...',
+    resultsPlaceholder: 'Start typing to search...',
+    closeHint: 'ESC - close',
+    noResults: 'No results found',
+    loading: 'Loading...',
+    pageCount: (count: number) => `${count} page${count !== 1 ? 's' : ''}`,
+    noAlias: 'No alias',
+  },
 }

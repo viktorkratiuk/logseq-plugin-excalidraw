@@ -38,7 +38,7 @@ const EditorApp: React.FC<EditorAppProps> = ({ pageName, renderSlotId }) => {
     <>
       <div className="flex h-screen w-screen items-center justify-center overflow-auto">
         <div className="fixed left-0 top-0 h-screen w-screen" onClick={() => logseq.hideMainUI()}></div>
-        <Editor pageName={pageName} onClose={onClose} />
+        <Editor pageName={pageName} onClose={onClose} renderSlotId={renderSlotId} />
       </div>
       <Toaster />
     </>
