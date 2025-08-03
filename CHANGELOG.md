@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/viktorkratiuk/logseq-plugin-excalidraw/compare/v1.7.0...v1.8.0) (2025-08-03)
+
+
+### Features
+
+* add inter-drawing link system for seamless navigation between Excalidraw drawings ([e5a2c1b](https://github.com/viktorkratiuk/logseq-plugin-excalidraw/commit/e5a2c1bdb2ba50dc4bf1012c95b5ec4376415fe3))
+
 # [1.7.0](https://github.com/viktorkratiuk/logseq-plugin-excalidraw/compare/v1.6.1...v1.7.0) (2025-08-02)
 
 
