@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/viktorkratiuk/logseq-plugin-excalidraw/compare/v1.8.0...v1.9.0) (2025-08-04)
+
+
+### Features
+
+* replace default hand-drawn font with Excalifont ([4c6039d](https://github.com/viktorkratiuk/logseq-plugin-excalidraw/commit/4c6039da3c6ed236502f48b5e1bcf22256d64a9c))
+
 # [1.8.0](https://github.com/viktorkratiuk/logseq-plugin-excalidraw/compare/v1.7.0...v1.8.0) (2025-08-03)
 
 
