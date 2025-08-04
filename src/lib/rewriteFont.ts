@@ -1,5 +1,6 @@
 import { pick } from 'lodash-es'
 
+import ExcalifontUrl from '@/assets/Excalifont-Regular.woff2?url'
 import { FONT_ID } from '@/lib/constants'
 import type { PluginSettings, PluginSettingsKeys } from '@/type'
 
@@ -32,6 +33,12 @@ const rewriteFont = (
 const rewriteAllFont = async () => {
   const settings = logseq.settings as unknown as PluginSettings
   const fontSettings = pick(settings, Object.keys(FONT_ID))
+
+  const handDrawnUrl = (fontSettings['Hand-drawn'] as string)?.trim?.()
+  if (!handDrawnUrl) {
+    rewriteFont('Virgil', ExcalifontUrl)
+  }
+
   for (const [name, url] of Object.entries(fontSettings)) {
     const _url = (url as string)?.trim?.()
     if (_url) rewriteFont(FONT_ID[name as PluginSettingsKeys], _url)

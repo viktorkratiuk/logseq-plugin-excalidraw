@@ -155,7 +155,9 @@ export const PageSearchOverlay: React.FC<PageSearchOverlayProps> = ({ isOpen, on
                         ? page.drawAlias
                         : i18n.noAlias}
                     </div>
-                    {page.originalName && page.originalName !== page.name ? <div className="truncate text-xs text-gray-500 dark:text-gray-400">{page.name}</div> : null}
+                    {page.originalName && page.originalName !== page.name ? (
+                      <div className="truncate text-xs text-gray-500 dark:text-gray-400">{page.name}</div>
+                    ) : null}
                   </div>
                 </div>
               ))}

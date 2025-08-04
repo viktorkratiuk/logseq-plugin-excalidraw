@@ -39,7 +39,6 @@ const bootModels = (renderApp: (props: RenderAppProps) => void) => {
     openDrawLink(e) {
       const pageName = e.dataset.pageName
       if (!pageName) return logseq.UI.showMsg(i18nCommon.pageNotFound)
-
       renderApp({ mode: 'preview', pageName })
       logseq.showMainUI()
     },
